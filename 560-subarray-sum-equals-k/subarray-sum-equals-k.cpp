@@ -1,15 +1,25 @@
 class Solution {
 public:
     int subarraySum(vector<int>& nums, int k) {
-        map<int, int> mpp;
-        mpp[0] = 1;
-        int preSum = 0, cnt = 0;
-        for (int i = 0; i < nums.size(); i++) {
-            preSum += nums[i];
-            int remove = preSum - k;
-            cnt += mpp[remove];
-            mpp[preSum] += 1;
+        unordered_map<int, int> sumFreq; 
+        int count = 0;
+        int sum = 0;
+
+        
+        sumFreq[0] = 1;
+
+        for (int i = 0; i < nums.size(); ++i) {
+            sum += nums[i];
+
+           
+            if (sumFreq.find(sum - k) != sumFreq.end()) {
+                count += sumFreq[sum - k];
+            }
+
+           
+            sumFreq[sum]++;
         }
-        return cnt;
+
+        return count;
     }
 };
