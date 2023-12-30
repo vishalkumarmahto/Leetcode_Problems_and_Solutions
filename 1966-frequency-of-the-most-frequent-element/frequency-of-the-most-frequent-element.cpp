@@ -1,22 +1,23 @@
 class Solution {
 public:
-    int maxFrequency(vector<int>& nums, int k) {
-        int ans = 1 , i = 0;
-        long windSum = 0;
-        sort(nums.begin(),nums.end());
-        for(int j = 0 ; j < nums.size() ; j++)
-        {   
-            int target = nums[j];
-            windSum += target;
-            long cond = (long)( j - i + 1 ) * target  - windSum;
-            while(cond > k )
-            {
-                windSum -= nums[i];
-                i++;
-                cond = (long)( j - i + 1 ) * target  - windSum;
+    int maxFrequency(vector<int> &nums, int k) {
+    
+        int res = 0, len = nums.size();
+        long tot = 0, curr;
+        sort(begin(nums), end(nums));
+        for (int i = 0, j = 0, currLen = 0; j < len; j++) {
+           
+            curr = nums[j];
+            currLen++;
+            tot += curr;
+           
+            while (curr * currLen - tot > k) {
+                tot -= nums[i++];
+                currLen--;
             }
-            ans = max(ans,j-i+1);
-        } 
-        return ans;
+            
+            res = max(res, currLen);
+        }
+        return res;
     }
 };
