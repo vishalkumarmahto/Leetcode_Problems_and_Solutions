@@ -11,33 +11,20 @@
 class Solution {
 public:
     ListNode* oddEvenList(ListNode* head) {
-        if(head==NULL || head->next==NULL || head->next->next==NULL) return head;
+     if(head == NULL) return head;
+        ListNode* ptr1 = head;
+        ListNode* ptr2 = head->next;
+        ListNode* temp = head->next;
 
-    //Creating odd and even pointer
-    ListNode* slow=head;
-    ListNode* fast=head->next;
-
-    //storing start pointer of even
-    ListNode* ans=fast;
-
-    //traversing and changing node pointers
-    while(fast!=NULL && fast->next!=NULL && fast->next->next!=NULL){
-        ListNode* aftereven=fast->next->next;
-        slow->next=fast->next;
-        slow=fast->next;
-        slow->next=NULL;
-        fast->next=aftereven;
-        fast=aftereven;
+        while(ptr1 and ptr2 and ptr1->next != NULL and ptr2->next != NULL){
+            ptr1->next = ptr1->next->next;
+            ptr1 = ptr1->next;
+            
+            ptr2->next = ptr2->next->next;
+            ptr2 = ptr2->next;
+           
+        }
+        ptr1->next = temp;
+        return head;
     }
-    //only for odd number condion 
-    if(fast->next!=NULL){
-    slow->next=fast->next;
-    slow=slow->next;
-    slow->next=NULL;
-    fast->next=NULL;
-    }
-    //Connecting odd even list
-    slow->next=ans;
-    return head;
-           }
 };
