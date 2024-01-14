@@ -12,15 +12,9 @@
  */
 class Solution {
 public:
-    vector<int> ans;
 
-    void inOrd(TreeNode* root) {
-        if (root == NULL)
-            return;
-        inOrd(root->left);
-        ans.push_back(root->val);
-        inOrd(root->right);
-    }
+
+ 
     vector<int> inorderTraversal(TreeNode* root) {
         stack<TreeNode*> st;
         TreeNode* node = root;
