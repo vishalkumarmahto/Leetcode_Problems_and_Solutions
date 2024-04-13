@@ -1,42 +1,36 @@
 class Solution {
 public:
     int maximalRectangle(vector<vector<char>>& matrix) {
-          
-        vector<vector<int>>table(matrix.size(), vector<int>(matrix[0].size()));
+        if (matrix.empty())
+            return 0;
+        
+        int result = 0;
+        vector<int> hist(matrix[0].size());
 
-        int i, j, k, l, maxi = 0, counter1, counter2;
-
-        for(i = 0; i<matrix.size(); i++){
-            table[i][0] = (matrix[i][0] == '1');
+        for (const vector<char>& row : matrix) {
+            for (int i = 0; i < row.size(); ++i)
+                hist[i] = row[i] == '0' ? 0 : hist[i] + 1;
+            result = max(result, largestarea(hist));
         }
-        for(i = 0; i<matrix[0].size(); i++){
-            table[0][i] = (matrix[0][i] == '1');
-        }
 
-        for(i = 1; i<matrix.size(); i++){
-            for(j = 1; j<matrix[0].size(); j++){
-                if(matrix[i][j] == '1'){
-                    table[i][j] = min({table[i][j-1], table[i-1][j], table[i-1][j-1]})+1;
-                }
+        return result;
+      
+    }
+private:
+    int largestarea(const vector<int>& heights) {
+        int result = 0;
+        stack<int> stack;
+
+        for (int i = 0; i <= heights.size(); ++i) {
+            while (!stack.empty() && (i == heights.size() || heights[stack.top()] > heights[i])) {
+                const int m = heights[stack.top()];
+                stack.pop();
+                const int v = stack.empty() ? i : i - stack.top() - 1;
+                result = max(result, m * v);
             }
+            stack.push(i);
         }
 
-        for(i = 0; i<matrix.size(); i++){
-            for(j = 0; j<matrix[0].size(); j++){
-                if(matrix[i][j] == '1'){
-                    counter1 = table[i][j] * table[i][j];
-                    counter2 = table[i][j] * table[i][j];
-                    for(k = i+1; k<matrix.size() && table[i][j] <= table[k][j] && table[k][j]; k++){
-                        counter1+=table[i][j];
-                    }
-                    for(l = j+1; l<matrix[0].size() && table[i][j] <= table[i][l] && table[i][l]; l++){
-                        counter2+=table[i][j];
-                    }
-                    maxi = max({counter1, counter2, maxi});
-                }
-            }
-        }
-
-        return maxi;
+        return result;
     }
 };
