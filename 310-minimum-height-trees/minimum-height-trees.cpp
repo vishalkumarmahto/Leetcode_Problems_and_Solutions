@@ -1,54 +1,43 @@
 class Solution {
 public:
     vector<int> findMinHeightTrees(int n, vector<vector<int>>& edges) {
-        if (edges.size() == 0) {
-            vector<int> tmp;
-            tmp.push_back(0);
-            return tmp;
-        }
-        unordered_map<int, list<int>> adj;
-
-        // creating adjacency list
-        for (int i = 0; i < edges.size(); i++) {
-            int u = edges[i][0];
-            int v = edges[i][1];
-            adj[u].push_back(v);
-            adj[v].push_back(u);
+        if (n == 1)
+            return {0}; // Special case with only one node
+        vector<int> degree(n, 0);
+        vector<vector<int>> graph(n);
+        for (auto& edge : edges) {
+            graph[edge[0]].push_back(edge[1]);
+            graph[edge[1]].push_back(edge[0]);
+            degree[edge[0]]++;
+            degree[edge[1]]++;
         }
 
-        vector<int> leaves; // Stores current leaf nodes
-
-        // Initialize leaves with nodes having only 1 adjacent node
-        for (auto& d : adj) {
-            if (d.second.size() == 1) {
-                leaves.push_back(d.first);
-            }
+        queue<int> leafQueue;
+        for (int i = 0; i < n; i++) {
+            if (degree[i] == 1)
+                leafQueue.push(i);
         }
 
-        // answer can consist of max. 2 nodes (Reason explained above)
-        while (n > 2) {
-            vector<int> new_leaves;
-
-            // remove current leaves
-            n -= leaves.size();
-
-            for (int leaf : leaves) {
-                // get the only neighbour of leaf
-                int neighbor = adj[leaf].front();
-                // remove leaf from neighbour's adjacency list
-                adj[neighbor].remove(leaf);
-
-                // if the adjacent node becomes a leaf node after removal, add
-                // it to the queue.
-                if (adj[neighbor].size() == 1) {
-                    new_leaves.push_back(neighbor);
+        int remainingNodes = n;
+        while (remainingNodes > 2) {
+            int leafCount = leafQueue.size();
+            remainingNodes -= leafCount;
+            for (int i = 0; i < leafCount; i++) {
+                int leaf = leafQueue.front();
+                leafQueue.pop();
+                for (int neighbor : graph[leaf]) {
+                    if (--degree[neighbor] == 1) {
+                        leafQueue.push(neighbor);
+                    }
                 }
             }
-
-            // update current no of leaf nodes
-            leaves = new_leaves;
         }
 
-        return leaves;
+        vector<int> minHeightTrees;
+        while (!leafQueue.empty()) {
+            minHeightTrees.push_back(leafQueue.front());
+            leafQueue.pop();
+        }
+        return minHeightTrees;
     }
 };
