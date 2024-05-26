@@ -1,33 +1,18 @@
 class Solution {
-private:
-    static const int MOD = 1000000000 + 7;
-
 public:
+    long long  dp[100004][3][4];
+    long long md=1e9+7;
+    long long  ans(int n,int a,int l){
+        if(a>=2 or l==3) return 0;
+        if(n==0) return 1;
+        if(dp[n][a][l]!=-1) return dp[n][a][l];
+         long long sol=ans(n-1,a,0)%md;
+        sol=(sol+ans(n-1,a+1,0)%md)%md;
+        sol=(sol+ans(n-1,a,l+1)%md)%md;
+        return dp[n][a][l]=sol%md;
+    }
     int checkRecord(int n) {
-        vector<vector<int>> prevDP(2, vector<int>(3, 1));
-
-        for (int i = 1; i <= n; i++) {
-            vector<vector<int>> newDP(2, vector<int>(3, 0));
-            for (int a = 0; a < 2; a++) {
-                for (int l = 0; l < 3; l++) {
-                    // Pick P
-                    newDP[a][l] += prevDP[a][2];
-                    newDP[a][l] %= MOD;
-                    if (a > 0) {
-                        // Pick A
-                        newDP[a][l] += prevDP[a - 1][2];
-                        newDP[a][l] %= MOD;
-                    }
-                    if (l > 0) {
-                        // Pick L
-                        newDP[a][l] += prevDP[a][l - 1];
-                        newDP[a][l] %= MOD;
-                    }
-                }
-            }
-            prevDP = newDP;
-        }
-
-        return prevDP[1][2];
+    memset(dp,-1,sizeof(dp));
+    return ans(n,0,0);
     }
 };
