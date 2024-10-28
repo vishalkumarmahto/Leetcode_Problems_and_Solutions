@@ -1,34 +1,43 @@
 class Solution {
 public:
-    int numIslands(vector<vector<char>>& grid) {
-        if (grid.empty() || grid[0].empty()) {
-            return 0;
-        }
+    void bfs(int row, int col, vector<vector<char>>& grid,
+             vector<vector<int>>& vis) {
+        vis[row][col] = 1;
+        queue<pair<int, int>> q;
+        q.push({row, col});
+        vector<pair<int, int>> directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+        while (!q.empty()) {
+            int n = grid.size();
+            int m = grid[0].size();
 
-        int numIslands = 0;
-        for (int i = 0; i < grid.size(); i++) {
-            for (int j = 0; j < grid[0].size(); j++) {
-                if (grid[i][j] == '1') {
-                    numIslands++;
-                    dfs(grid, i, j);
+            int r = q.front().first;
+            int c = q.front().second;
+            q.pop();
+            for (auto& dir : directions) {
+                int nrow = r + dir.first;
+                int ncol = c + dir.second;
+                if (nrow >= 0 && nrow < n && ncol >= 0 && ncol < m &&
+                    grid[nrow][ncol] == '1' && !vis[nrow][ncol]) {
+                    vis[nrow][ncol] = 1;
+                    q.push({nrow, ncol});
                 }
             }
         }
-
-        return numIslands;
     }
-
-private:
-    void dfs(vector<vector<char>>& grid, int i, int j) {
-        if (i < 0 || i >= grid.size() || j < 0 || j >= grid[0].size() ||
-            grid[i][j] != '1') {
-            return;
+    // Function to find the number of islands.
+    int numIslands(vector<vector<char>>& grid) {
+        int n = grid.size();
+        int m = grid[0].size();
+        vector<vector<int>> vis(n, vector<int>(m, 0));
+        int cnt = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (!vis[i][j] && grid[i][j] == '1') {
+                    cnt++;
+                    bfs(i, j, grid, vis);
+                }
+            }
         }
-
-        grid[i][j] = '0';    // mark as visited
-        dfs(grid, i + 1, j); // down
-        dfs(grid, i - 1, j); // up
-        dfs(grid, i, j + 1); // right
-        dfs(grid, i, j - 1); // left
+        return cnt;
     }
 };
