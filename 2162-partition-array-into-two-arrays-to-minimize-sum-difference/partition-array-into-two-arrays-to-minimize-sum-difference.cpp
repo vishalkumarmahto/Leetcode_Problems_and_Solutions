@@ -1,62 +1,42 @@
 class Solution {
 public:
-    int minimumDifference(vector<int>& nums) {
-        int n = nums.size();
-        vector<int> a, b;
-        vector<vector<long long int>> dp1(40), dp2(40);
-        long long int sum1 = 0, sum2 = 0;
-        for (int i = 0; i < n; i++) {
-            if (i < n / 2)
-                a.push_back(nums[i]), sum1 += nums[i];
-            else
-                b.push_back(nums[i]), sum2 += nums[i];
-        }
-        n = n / 2;
-        unordered_map<long long int, int> m1, m2;
-        vector<long long int> v1, v2;
-        for (int i = 0; i < (int)(1 << n); i++) {
-            long long int sum1 = 0, sum2 = 0;
-            int sets = 0;
-            for (int j = 0; j < n; j++) {
-                if ((i & (1 << j))) {
-                    sets++;
-                    sum1 += a[j];
-                }
-            }
-            dp1[sets].push_back(sum1);
-        }
-        for (int i = 0; i < (int)(1 << n); i++) {
-            long long int sum2 = 0, sum1 = 0;
-            int sets = 0;
-            for (int j = 0; j < n; j++) {
-                if ((i & (1 << j))) {
-                    sets++;
-                    sum1 += b[j];
-                }
-            }
-            dp2[sets].push_back(sum1);
-        }
-        long long int ans = LLONG_MAX;
-        for (int i = 0; i <= n; i++) {
-            int sets = i;
-            int nonsets = n - i;
-            sort(dp2[nonsets].begin(), dp2[nonsets].end());
-            for (auto i : dp1[sets]) {
-                long long currSum = (sum1 + sum2 - 2 * i) / 2;
-                int loc = lower_bound(dp2[nonsets].begin(), dp2[nonsets].end(),
-                                      currSum) -
-                          dp2[nonsets].begin();
-                if (loc != dp2[nonsets].size())
-                    ans = min(ans,
-                              abs(sum1 + sum2 - 2 * i - 2 * dp2[nonsets][loc]));
-                if (loc > 0)
-                    ans = min(ans, abs(sum1 + sum2 - 2 * i -
-                                       2 * dp2[nonsets][loc - 1]));
-                if (loc + 1 < dp2[nonsets].size())
-                    ans = min(ans, abs(sum1 + sum2 - 2 * i -
-                                       2 * dp2[nonsets][loc + 1]));
+    vector<vector<int>> findAllSubsetsSum(vector<int>& nums, int l, int r) {
+    int totLengthOfSubarray = r - l + 1;
+    vector<vector<int>> res(totLengthOfSubarray + 1);
+    for (int i = 0; i < (1 << totLengthOfSubarray); i++) {
+        int sum = 0, countOfChosenNos = 0;
+        for (int j = 0; j < totLengthOfSubarray; j++) {
+            if (i & (1 << j)) {
+                sum += nums[l + j];
+                countOfChosenNos++;
             }
         }
-        return ans;
+        res[countOfChosenNos].push_back(sum);
     }
+    return res;
+}
+
+int minimumDifference(vector<int>& nums) {
+    int totalSum = accumulate(begin(nums), end(nums), 0);
+    int n = nums.size();
+
+    auto left = findAllSubsetsSum(nums, 0, n / 2 - 1);
+    auto right = findAllSubsetsSum(nums, n / 2, n - 1);
+    int target = totalSum / 2, ans = INT_MAX;
+
+    //we can take (0 to n/2) length numbers from left
+    for (int i = 0; i <= n / 2; i++) {
+        //now we take rest - (n/2-i) length from right, we sort it to binary search
+        auto r = right[n / 2 - i];
+        sort(begin(r), end(r));
+
+        for (int curleftSum : left[i]) {
+            int needSumFromRight = target - curleftSum;
+            auto it = lower_bound(begin(r), end(r), needSumFromRight);
+            if (it != end(r))
+                ans = min(ans, abs(totalSum - 2 * (curleftSum + *it)));
+        }
+    }
+    return ans;
+}
 };
