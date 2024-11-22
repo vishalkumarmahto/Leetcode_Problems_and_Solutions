@@ -1,31 +1,42 @@
 class Solution {
+
 public:
-    bool isMatch(string text, string pattern) {
-        int n = pattern.size();
-        int m = text.size();
-        vector<vector<bool>> dp(n + 1, vector<bool>(m + 1, false));
+bool isAllStars(string &S1, int i) {
+    // S1 is taken in 1-based indexing
+    for (int j = 1; j <= i; j++) {
+        if (S1[j - 1] != '*')
+            return false;
+    }
+    return true;
+}
 
-        // Base cases
-        dp[0][0] = true; // Empty pattern matches empty string
+    bool isMatch(string S2, string S1) {
+    int n = S1.size();
+    int m = S2.size();
 
-        // Pattern matches empty string only if it contains all '*'
-        for (int i = 1; i <= n; i++) {
-            dp[i][0] = dp[i - 1][0] && pattern[i - 1] == '*';
-        }
+    // Create two arrays to store previous and current rows of matching results
+    vector<bool> prev(m + 1, false);
+    vector<bool> cur(m + 1, false);
 
-        // Fill DP table
-        for (int i = 1; i <= n; i++) {
-            for (int j = 1; j <= m; j++) {
-                if (pattern[i - 1] == text[j - 1] || pattern[i - 1] == '?') {
-                    dp[i][j] = dp[i - 1][j - 1];
-                } else if (pattern[i - 1] == '*') {
-                    dp[i][j] = dp[i - 1][j] || dp[i][j - 1]; // '*' matches zero or more characters
+    prev[0] = true; // Initialize the first element of the previous row to true
+
+    for (int i = 1; i <= n; i++) {
+        cur[0] = isAllStars(S1, i); // Initialize the first element of the current row
+        for (int j = 1; j <= m; j++) {
+            if (S1[i - 1] == S2[j - 1] || S1[i - 1] == '?') {
+                cur[j] = prev[j - 1]; // Characters match or S1 has '?'
+            } else {
+                if (S1[i - 1] == '*') {
+                    cur[j] = prev[j] || cur[j - 1]; // '*' represents empty or a character
                 } else {
-                    dp[i][j] = false;
+                    cur[j] = false; // Characters don't match and S1[i-1] is not '*'
                 }
             }
         }
+        prev = cur; // Update the previous row with the current row
+    }
 
-        return dp[n][m];
+    // The value at prev[m] contains whether S1 matches S2
+    return prev[m];
     }
 };
