@@ -21,21 +21,22 @@ private:
 public:
     int maxProfit(vector<int>& prices) {
         int n = prices.size();
-        vector<vector<int>> dp(n + 1, vector<int>(4, 0));
+        vector<int>after(4,0),curi(4,0);
        
         for (int ind = n - 1; ind >= 0; ind--) {
             for (int trans = 3; trans >= 0; trans--) {
                 int profit = 0;
                if (trans % 2 == 0) { // Buy
-                    profit = max(-prices[ind] + ((trans + 1 <= 3) ? dp[ind + 1][trans + 1] : 0), 
-                                 0 + dp[ind + 1][trans]); // Skip
+                    profit = max(-prices[ind] + ((trans + 1 <= 3) ? after[trans + 1] : 0), 
+                                 0 + after[trans]); // Skip
                 } else { // Sell
-                    profit = max(prices[ind] + ((trans + 1 <= 3) ? dp[ind + 1][trans + 1] : 0), 
-                                 0 + dp[ind + 1][trans]); // Skip
+                    profit = max(prices[ind] + ((trans + 1 <= 3) ? after[trans + 1] : 0), 
+                                 0 + after[trans]); // Skip
                 }
-                dp[ind][trans] = profit;
+                curi[trans] = profit;
             }
+            after = curi;
         }
-        return dp[0][0];
+        return after[0];
     }
 };
