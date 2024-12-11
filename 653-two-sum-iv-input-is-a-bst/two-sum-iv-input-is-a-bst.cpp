@@ -10,35 +10,22 @@
  * };
  */
 class Solution {
-public: 
-    void postorder(TreeNode *root,vector<int> &v){
-        if(!root) return ;
-        postorder(root->left,v);
-        postorder(root->right,v);
-        v.push_back(root->val);
-    }
-    
 public:
+    void inorder(TreeNode*root, vector<int>&ans){
+        if(root==NULL) return;
+        inorder(root->left,ans);
+        ans.push_back(root->val);
+        inorder(root->right,ans);
+    }
     bool findTarget(TreeNode* root, int k) {
-        vector<int> v;
-        postorder(root,v);
-        
-        unordered_map<int,int> mp;
-        
-        for(auto &i:v){
-            mp[i]++;
+        vector<int>ans;
+        inorder(root,ans);
+        int i =0, j = ans.size()-1;
+        while(i<j){
+            if(ans[i]+ans[j]==k) return true;
+            if(ans[i]+ans[j]>k) j--;
+            else i++;
         }
-        
-        for(auto &i:v){
-            if(k==2*i){
-                if(mp.find(k-i)!=mp.end()){
-                    if(mp[k-i]>1) return true;
-                }
-            }
-            else if(mp.find(k-i)!=mp.end()) return true;
-        }
-        
         return false;
-        
     }
 };
