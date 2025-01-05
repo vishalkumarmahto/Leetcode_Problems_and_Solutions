@@ -8,20 +8,17 @@
  */
 class Solution {
 public:
-    ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
-            unordered_set<ListNode*>st;
-            ListNode * temp1 = headA;
-            while(temp1!=NULL){
-                st.insert(temp1);
-                temp1=temp1->next;
-            }
-            ListNode * temp2 = headB;
-            while(temp2!=NULL){
-                if(st.find(temp2)!=st.end()){
-                    return temp2;
-                }
-                temp2= temp2->next;
-            }
-            return NULL;
+    ListNode *getIntersectionNode(ListNode *head1, ListNode *head2) {
+        while(head2 != NULL) {
+        ListNode* temp = head1;
+        while(temp != NULL) {
+            //if both nodes are same
+            if(temp == head2) return head2;
+            temp = temp->next;
+        }
+        head2 = head2->next;
+    }
+    //intersection is not present between the lists return null
+    return NULL;
     }
 };
