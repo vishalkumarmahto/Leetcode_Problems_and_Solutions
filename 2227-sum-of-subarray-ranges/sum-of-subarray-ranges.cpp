@@ -1,34 +1,16 @@
 class Solution {
 public:
-    long long subArrayRanges(vector<int>& nums) {
-        int n = nums.size();
-        long long answer = 0;
-        stack<int> stk;
-
-        // Find the sum of all the minimum.
-        for (int right = 0; right <= n; ++right) {
-            while (!stk.empty() &&
-                   (right == n || nums[stk.top()] >= nums[right])) {
-                int mid = stk.top();
-                stk.pop();
-                int left = stk.empty() ? -1 : stk.top();
-                answer -= (long long)nums[mid] * (right - mid) * (mid - left);
+    long long subArrayRanges(vector<int>& arr) {
+        long sum = 0;
+        int n = arr.size();
+        for(int i=0;i<n;i++)
+        {   int maxEl= arr[i], minEl = arr[i];
+            for(int j=i;j<n;j++){
+                maxEl = max(maxEl,arr[j]);
+                minEl = min(minEl,arr[j]);
+                sum += maxEl - minEl;
             }
-            stk.push(right);
         }
-
-        // Find the sum of all the maximum.
-        stk.pop();
-        for (int right = 0; right <= n; ++right) {
-            while (!stk.empty() &&
-                   (right == n || nums[stk.top()] <= nums[right])) {
-                int mid = stk.top();
-                stk.pop();
-                int left = stk.empty() ? -1 : stk.top();
-                answer += (long long)nums[mid] * (right - mid) * (mid - left);
-            }
-            stk.push(right);
-        }
-        return answer;
+        return sum;
     }
 };
