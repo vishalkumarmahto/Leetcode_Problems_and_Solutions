@@ -1,26 +1,43 @@
 class Solution {
 public:
+    vector<int> findNSE(vector<int>& arr) {
+        int n = arr.size();
+        vector<int> nse(n);
+        stack<int> st;
+        for (int i = n - 1; i >= 0; i--) {
+            while (!st.empty() && arr[st.top()] >= arr[i]) {
+                st.pop();
+            }
+            nse[i] = st.empty() ? n : st.top();
+            st.push(i);
+        }
+        return nse;
+    }
+    vector<int> findPSE(vector<int>& arr) {
+        int n = arr.size();
+        vector<int> pse(n);
+        stack<int> st;
+        for (int i = 0; i < n; i++) {
+            while (!st.empty() && arr[st.top()] > arr[i]) {
+                st.pop();
+            }
+            pse[i] = st.empty() ? -1 : st.top();
+            st.push(i);
+        }
+        return pse;
+    }
     int sumSubarrayMins(vector<int>& arr) {
         int n = arr.size();
-        vector<long long> dp(n, 0);
-        vector<int> st;
-        int m = 1e9 + 7;
-        long long ans = 0;
-
+        // Write your code here.
+        vector<int> nse = findNSE(arr);
+        vector<int> pse = findPSE(arr);
+        int total = 0;
+        int mod = (int)(1e9 + 7);
         for (int i = 0; i < n; i++) {
-            while (st.size() != 0 && arr[i] <= arr[st.back()]) {
-                st.pop_back();
-            }
-            if (st.size() == 0) {
-                dp[i] = (arr[i] * (i + 1)) % m;
-            } else {
-                int end = st.back();
-                dp[i] = (dp[end] + (arr[i] * (i - end)) % m) % m;
-            }
-
-            st.push_back(i);
-            ans = (ans + dp[i]) % m;
+            int left = i - pse[i];
+            int right = nse[i] - i;
+            total = (total + (right * left * 1LL * arr[i]) % mod) % mod;
         }
-        return ans;
+        return total;
     }
 };
