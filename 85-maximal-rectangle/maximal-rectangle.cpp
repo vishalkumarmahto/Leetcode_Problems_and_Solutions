@@ -1,36 +1,46 @@
 class Solution {
 public:
-    int maximalRectangle(vector<vector<char>>& matrix) {
-        if (matrix.empty())
-            return 0;
-        
-        int result = 0;
-        vector<int> hist(matrix[0].size());
-
-        for (const vector<char>& row : matrix) {
-            for (int i = 0; i < row.size(); ++i)
-                hist[i] = row[i] == '0' ? 0 : hist[i] + 1;
-            result = max(result, largestarea(hist));
-        }
-
-        return result;
-      
-    }
-private:
-    int largestarea(const vector<int>& heights) {
-        int result = 0;
-        stack<int> stack;
-
-        for (int i = 0; i <= heights.size(); ++i) {
-            while (!stack.empty() && (i == heights.size() || heights[stack.top()] > heights[i])) {
-                const int m = heights[stack.top()];
-                stack.pop();
-                const int v = stack.empty() ? i : i - stack.top() - 1;
-                result = max(result, m * v);
+    int largestRectangleArea(vector<int>& arr) {
+        int n = arr.size();
+        int maxArea = 0;
+        stack<int> st;
+        for (int i = 0; i < n; i++) {
+            while (!st.empty() && arr[st.top()] > arr[i]) {
+                int el = st.top();
+                st.pop();
+                int pse = st.empty() ? -1 : st.top();
+                maxArea = max(maxArea, (i - pse - 1) * arr[el]);
             }
-            stack.push(i);
+            st.push(i);
         }
-
-        return result;
+        while (!st.empty()) {
+            int el = st.top();
+            st.pop();
+            int pse = st.empty() ? -1 : st.top();
+            maxArea = max(maxArea, (n - pse - 1) * arr[el]);
+        }
+        return maxArea;
+    }
+    int maximalRectangle(vector<vector<char>>& mat) {
+        int n = mat.size();
+        int m = mat[0].size();
+        int maxArea = 0;
+        vector<vector<int>> preSum(n, vector<int>(m, 0));
+        for (int j = 0; j < m; j++) {
+            int sum = 0;
+            for (int i = 0; i < n; i++) {
+              
+                if (mat[i][j] == '1') {
+                    sum++;
+                } else {
+                    sum = 0;
+                }
+                preSum[i][j] = sum;
+            }
+        }
+        for (int i = 0; i < n; i++) {
+            maxArea = max(maxArea, largestRectangleArea(preSum[i]));
+        }
+        return maxArea;
     }
 };
