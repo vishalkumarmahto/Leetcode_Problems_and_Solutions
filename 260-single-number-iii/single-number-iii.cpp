@@ -1,24 +1,15 @@
 class Solution {
 public:
     vector<int> singleNumber(vector<int>& nums) {
-       
-        int xorAll = 0;
-        for (int num : nums) {
-            xorAll ^= num;
+        int n = nums.size();
+        vector<int>ans;
+        unordered_map<int,int>mpp;
+        for(int i: nums){
+             mpp[i]++;
         }
-
-        int setBit = xorAll & -(unsigned int)xorAll;
-
-        int a = 0, b = 0;
-
-        for (int num : nums) {
-            if (num & setBit) {
-                a ^= num;
-            } else {
-                b ^= num;
-            }
+        for(auto it:mpp){
+            if(it.second==1) ans.push_back(it.first);
         }
-
-        return {a, b};
+        return ans;
     }
 };
