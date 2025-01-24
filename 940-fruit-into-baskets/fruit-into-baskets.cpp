@@ -1,23 +1,21 @@
 class Solution {
 public:
-    int totalFruit(vector<int>& fruits) {
-        int n = fruits.size();
-        int l = 0, r = 0, maxLen = 0;
+    int totalFruit(vector<int>& arr) {
+        int n = arr.size();
+        int left = 0, right = 0, maxLen = 0;
         unordered_map<int, int> mpp;
-        while (r < n) {
-            mpp[fruits[r]]++;
+        while (right < n) {
+            mpp[arr[right]]++;
             if (mpp.size() > 2) {
-                mpp[fruits[l]]--;
-                if (mpp[fruits[l]] == 0) {
-                    mpp.erase(fruits[l]);
-                }
-
-                l++;
+                mpp[arr[left]]--;
+                if (mpp[arr[left]] == 0)
+                    mpp.erase(arr[left]);
+                left++;
             }
             if (mpp.size() <= 2) {
-                maxLen = max(maxLen, r - l + 1);
+                maxLen = max(maxLen, right - left + 1);
             }
-            r++;
+            right++;
         }
         return maxLen;
     }
