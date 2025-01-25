@@ -1,29 +1,15 @@
 class Solution {
 public:
     int numberOfSubstrings(string s) {
-        int cnta = 0, cntb = 0, cntc = 0;
-        int ans1 = 0, j = 0, i = 0;
-        while (j < s.size()) {
-            if (s[j] == 'a')
-                cnta++;
-            else if (s[j] == 'b')
-                cntb++;
-            else
-                cntc++;
-            while (cnta && cntb && cntc) { // calc where abc not present at once
-                if (s[i] == 'a')
-                    cnta--;
-                else if (s[i] == 'b')
-                    cntb--;
-                else
-                    cntc--;
-                i++;
+        vector<int>lastSeen(3,-1);
+        int cnt = 0;
+        for(int i=0;i<s.length();i++){
+            lastSeen[s[i]-'a'] = i;
+            if(lastSeen[0]!=-1&& lastSeen[1]!=-1&& lastSeen[2]!=-1){
+                cnt = cnt + (1 + min(lastSeen[0],min(lastSeen[1],lastSeen[2])));
             }
-            ans1 += j - i + 1;
-            j++;
+
         }
-        long long n = s.size();
-        long long ans = (n * (n + 1)) / 2;
-        return ans - ans1;
+        return cnt;
     }
 };
