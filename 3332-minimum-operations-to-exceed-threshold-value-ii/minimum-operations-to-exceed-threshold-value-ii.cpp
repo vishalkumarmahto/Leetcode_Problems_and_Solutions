@@ -1,19 +1,16 @@
 class Solution {
 public:
     int minOperations(vector<int>& nums, int k) {
-        priority_queue<long, vector<long>, greater<long>> min_heap(nums.begin(),
-                                                                   nums.end());
-        int num_operations = 0;
-
-        while (min_heap.top() < k) {
-            long x = min_heap.top();
-            min_heap.pop();
-            long y = min_heap.top();
-            min_heap.pop();
-            min_heap.push(min(x, y) * 2 + max(x, y));
-
-            num_operations++;
+        priority_queue<long,vector<long>,greater<long>>minHeap(nums.begin(),nums.end());
+        int numOps = 0;
+        while(minHeap.top()<k){
+            long x = minHeap.top();
+            minHeap.pop();
+            long y = minHeap.top();
+            minHeap.pop();
+            minHeap.push(min(x,y)*2+ max(x,y));
+            numOps++;
         }
-        return num_operations;
+        return numOps;
     }
 };
