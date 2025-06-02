@@ -17,8 +17,8 @@ public:
             }
             int down = 1;
             while (i < n && ratings[i] < ratings[i - 1]) {
-                sum += down;
                 i++;
+                sum += down;
                 down += 1;
             }
             if (down > peak) {
