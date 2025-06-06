@@ -1,15 +1,12 @@
 class Solution {
 public:
     vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
-         int V = numCourses;
-        vector<vector<int>> adj(V);
+        int V = numCourses;
+        vector<vector<int>>adj(V);
         for (auto it : prerequisites) {
-            int course = it[1];
-            int prereq = it[0];
-            adj[course].push_back(prereq);
+            adj[it[1]].push_back(it[0]);
         }
-
-        vector<int> indegree(V, 0);
+        vector<int>indegree(V,0);
         for (int i = 0; i < V; i++) {
             for (auto it : adj[i]) {
                 indegree[it]++;
@@ -17,9 +14,8 @@ public:
         }
         queue<int> q;
         for (int i = 0; i < V; i++) {
-            if (indegree[i] == 0) {
+            if (indegree[i] == 0)
                 q.push(i);
-            }
         }
         vector<int> topo;
         while (!q.empty()) {
@@ -32,8 +28,8 @@ public:
                     q.push(it);
             }
         }
-        if (topo.size() == V) return topo;
-            
+        if (topo.size() == V)
+            return topo;
         return {};
     }
 };
