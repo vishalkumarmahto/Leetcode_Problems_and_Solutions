@@ -1,15 +1,14 @@
 class Solution {
 public:
-    vector<int> twoSum(vector<int>& nums, int target) {
-        map<int, int> mpp;
+    vector<int> twoSum(vector<int> &nums, int target) {
         for (int i = 0; i < nums.size(); i++) {
-            int a = nums[i];
-            int more = target - a;
-            if (mpp.find(more) != mpp.end()) {
-                return {mpp[more], i};
+            for (int j = i + 1; j < nums.size(); j++) {
+                if (nums[j] == target - nums[i]) {
+                    return {i, j};
+                }
             }
-            mpp[a] = i;
         }
-        return {-1, -1};
+        // Return an empty vector if no solution is found
+        return {};
     }
 };
