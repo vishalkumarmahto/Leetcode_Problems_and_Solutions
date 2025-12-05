@@ -1,11 +1,11 @@
 class Solution {
 public:
     int countPartitions(vector<int>& nums) {
-        int totalSum = 0;
-        for (int x : nums) {
-
-            totalSum += x;
+        int n = nums.size();
+        int totSum = 0;
+        for(int i=0;i<n;i++){
+            totSum+=nums[i];
         }
-        return totalSum % 2 == 0 ? nums.size() - 1 : 0;
+        return totSum%2==0?n-1:0;
     }
 };
